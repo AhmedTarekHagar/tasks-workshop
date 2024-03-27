@@ -1,0 +1,53 @@
+<div class="container rounded overflow-hidden position-relative">
+
+    <!-- loader for waiting time for response -->
+    <div *ngIf="!isLoaded"
+        class="position-absolute top-0 start-0 end-0 bottom-0 d-flex justify-content-center align-items-center">
+        <div class="loader"></div>
+    </div>
+
+    <!-- content from api response -->
+    <div class="row g-3" *ngIf="isLoaded">
+        <div class="col-md-4" *ngFor="let task of tasksList">
+            <div class="inner p-3 rounded shadow cursor-pointer" [ngClass]="{'bg-warning': !task.status , 'bg-info': task.status}"
+                [routerLink]="['/taskdetails',task.id]">
+                <h2 class="text-uppercase">{{task.title}}</h2>
+                <p>{{task.description}}</p>
+                <ng-container *ngIf="task.status; else pending">
+                    <p>Complete</p>
+                </ng-container>
+                <ng-template #pending>
+                    <p>Pending</p>
+                </ng-template>
+                <p [ngClass]="{'text-danger': !task.status , 'text-warning': task.status}">Priority: {{task.priority}}
+                </p>
+                <div class="d-flex justify-content-between">
+                    <span>Start Time:
+                        <span
+                            *ngIf="task.startTime != ''; else noStartTime;">{{task.startTime?.slice(0,10)?.split('-')?.reverse()?.join('/')}}</span>
+                        <ng-template #noStartTime>
+                            <i class="fa-solid fa-minus"></i>
+                        </ng-template>
+                    </span>
+                    <span>End Time:
+                        <span
+                            *ngIf="task.endTime != ''; else noEndtime;">{{task.endTime?.slice(0,10)?.split('-')?.reverse()?.join('/')}}</span>
+                        <ng-template #noEndtime>
+                            <i class="fa-solid fa-minus"></i>
+                        </ng-template>
+                    </span>
+                </div>
+                <ng-container *ngIf="task.numbered; else unordered">
+                    <ol class="list-unstyled">
+                        <li *ngFor="let item of task.items; index as index">{{index+1 | number:'2.0'}} - {{item}}</li>
+                    </ol>
+                </ng-container>
+                <ng-template #unordered>
+                    <ul>
+                        <li *ngFor="let item of task.items">{{item}}</li>
+                    </ul>
+                </ng-template>
+            </div>
+        </div>
+    </div>
+</div>
