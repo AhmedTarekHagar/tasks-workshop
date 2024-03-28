@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { TasksService } from '../services/tasks.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Task } from '../interfaces/task';
+import { Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-task-details',
@@ -10,7 +11,10 @@ import { Task } from '../interfaces/task';
 })
 export class TaskDetailsComponent implements OnInit {
 
-  constructor(private _TasksService: TasksService, private _ActivatedRoute: ActivatedRoute, private _Router: Router) { }
+  constructor(private _TasksService: TasksService,
+    private _ActivatedRoute: ActivatedRoute,
+    private _Router: Router,
+    private _Title: Title) { }
 
   ngOnInit(): void {
 
@@ -20,6 +24,7 @@ export class TaskDetailsComponent implements OnInit {
 
     this._TasksService.getTaskByIdReq(this.taskID).subscribe({
       next: (res) => {
+        this._Title.setTitle(res.title);
         this.taskDetails = res;
         this.isLoaded = true;
       }
@@ -38,7 +43,7 @@ export class TaskDetailsComponent implements OnInit {
     })
   }
 
-  updateTask(taskID: string | number){
+  updateTask(taskID: string | number) {
     this._Router.navigate(['task-form', taskID])
   }
 
