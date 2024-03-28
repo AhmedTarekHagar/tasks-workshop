@@ -3,8 +3,7 @@ import { TasksService } from '../services/tasks.service';
 import { Task } from '../interfaces/task';
 import { Title } from '@angular/platform-browser';
 import { Router } from '@angular/router';
-
-
+import { ToastEvokeService } from '@costlydeveloper/ngx-awesome-popup';
 
 @Component({
   selector: 'app-tasks-list',
@@ -15,7 +14,8 @@ export class TasksListComponent implements OnInit {
 
   constructor(private _TasksService: TasksService,
     private _Title: Title,
-    private _Router: Router) { }
+    private _Router: Router,
+    private toastEvokeService: ToastEvokeService) { }
 
   ngOnInit(): void {
     this.getAllTasks();
@@ -46,6 +46,7 @@ export class TasksListComponent implements OnInit {
         this.isLoaded = false;
         this.getAllTasks();
         this.isLoaded = true;
+        this.toastEvokeService.success('Success', 'Task deleted').subscribe();
       }
     })
   }
@@ -58,6 +59,7 @@ export class TasksListComponent implements OnInit {
   dublicateTask(taskID: number | string, event: MouseEvent) {
     // to prevent opening task details on click
     event.stopPropagation();
+    
     this._TasksService.getTaskByIdReq(taskID).subscribe({
       next: (res) => {
         this._TasksService.addNewTaskReq(res).subscribe({
@@ -65,6 +67,8 @@ export class TasksListComponent implements OnInit {
             this.isLoaded = false;
             this.getAllTasks();
             this.isLoaded = true;
+            this.toastEvokeService.success('Success', 'Task dublicated').subscribe();
+
           }
         })
       }

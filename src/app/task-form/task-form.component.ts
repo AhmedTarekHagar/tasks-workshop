@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { TasksService } from '../services/tasks.service';
 import { Task } from '../interfaces/task';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -29,47 +29,74 @@ export class TaskFormComponent implements OnInit {
       this.situation = route['id'];
     })
 
+    this.getLastId();
+    this.initForm();
+    this.setComponentBehaviour();
+  }
+
+  // get last task id
+  getLastId() {
     this._TasksService.getAllTasksReq().subscribe({
       next: (res) => {
         this.allTasksLength = res.length;
       }
     })
+  }
 
-    if (this.situation == 'new') {
-      this.taskForm = this.formBuilder.group({
-        title: ['', Validators.required],
-        description: ['', Validators.required],
-        priority: ['', Validators.pattern(/^\d+$/)],
-        completed: [false],
-        startTime: [''],
-        endTime: [''],
-        numbered: [false],
-        items: []
-      });
-    } else {
+  // determine whether the component wil behave as add or update
+  setComponentBehaviour() {
+    if (this.situation != 'new') {
       this._TasksService.getTaskByIdReq(this.situation).subscribe({
         next: (res) => {
-          this.updateID = res.id;
-          this.taskForm = this.formBuilder.group({
-            title: [res.title, Validators.required],
-            description: [res.description, Validators.required],
-            priority: [res.priority, Validators.pattern(/^\d+$/)],
-            completed: [res.status],
-            startTime: [res.startTime],
-            endTime: [res.endTime],
-            numbered: [res.numbered],
-            items: [res.items]
-          });
+          this.fillForm(res)
         }
       })
     }
   }
 
+  // fill form with object to update data
+  fillForm(res: Task) {
+    this.updateID = res.id.toString();
+    this.taskForm.patchValue({
+      title: res.title,
+      description: res.description,
+      priority: res.priority,
+      completed: res.status,
+      startTime: res.startTime,
+      endTime: res.endTime,
+      numbered: res.numbered,
+    });
+    res.items.forEach((item, index) => {
+      const newControl = this.formBuilder.control(index, this.formBuilder.control(null))
+      newControl.setValue(item)
+      this.Items().push(newControl);
+    })
+  }
+
+  // initialize form
+  initForm() {
+    this.taskForm = this.formBuilder.group({
+      title: ['', Validators.required],
+      description: ['', Validators.required],
+      priority: ['', Validators.pattern(/^\d+$/)],
+      completed: [false],
+      startTime: [''],
+      endTime: [''],
+      numbered: [false],
+      items: this.formBuilder.array([])
+    });
+  }
+
+  Items(): FormArray {
+    return this.taskForm.get('items') as FormArray;
+  }
+
   // add item field to DOM dynamically
   addItem(): void {
-    const newControlName = `dynamicControl${this.dynamicControls.length}`;
-    this.taskForm.addControl(newControlName, this.formBuilder.control(''));
-    this.dynamicControls.push({ label: `Item ${this.dynamicControls.length + 1}`, controlName: newControlName });
+    const newControlName = this.dynamicControls.length + 1;
+    const newControl = this.formBuilder.control(newControlName, this.formBuilder.control(null))
+    newControl.setValue(null);
+    this.Items().push(newControl);
   }
 
   // collect items into an array to maintain api requirement
@@ -89,11 +116,11 @@ export class TaskFormComponent implements OnInit {
       title: this.taskForm.get('title')?.value,
       description: this.taskForm.get('description')?.value,
       priority: parseInt(this.taskForm.get('priority')?.value),
-      status: this.taskForm.get('completed')?.value ? 'completed' : 'pending',
+      status: this.taskForm.get('completed')?.value,
       startTime: this.taskForm.get('startTime')?.value,
       endTime: this.taskForm.get('endTime')?.value,
       numbered: this.taskForm.get('numbered')?.value,
-      items: this.getDynamicFormData()
+      items: this.Items().value
     };
 
     if (this.situation == 'new') {
