@@ -4,10 +4,10 @@
 
 .inner {
     position: relative;
-    transform: translate(0,0);
+    transform: translate(0,0) scale(1);
     transition: transform .5s;
 }
 
 .inner:hover {
-    transform: translate(-5%,-5%);
+    transform: translate(-5%,-5%) scale(1.1);
 }

@@ -1,11 +1,11 @@
-<div class="container">
+<div class="container pt-5">
 
     <div *ngIf="!isLoaded"
         class="position-absolute top-0 start-0 end-0 bottom-0 d-flex justify-content-center align-items-center">
         <div class="loader"></div>
     </div>
 
-    <div class="row" *ngIf="isLoaded">
+    <div class="row pt-3" *ngIf="isLoaded">
         <div class="col-md-9 mx-auto py-3 px-5 rounded shadow"
             [ngClass]="{'bg-warning': !taskDetails.status , 'bg-info': taskDetails.status}">
             <div class="item">
@@ -50,11 +50,11 @@
                 </ng-template>
             </div>
             <div class="controls d-flex justify-content-center gap-3">
-                <button class="btn btn-success" (click)="updateTask(taskDetails.id)"><i
+                <button class="btn btn-success" title="Update Task" (click)="updateTask(taskDetails.id)"><i
                         class="fa-regular fa-pen-to-square"></i></button>
-                <button class="btn btn-secondary" (click)="dublicateTask(taskDetails.id)"><i
+                <button class="btn btn-secondary" title="Dublicate Task" (click)="dublicateTask(taskDetails.id)"><i
                         class="fa-regular fa-copy"></i></button>
-                <button class="btn btn-danger" (click)="deleteTask(taskID)"><i class="fa-solid fa-trash"></i></button>
+                <button class="btn btn-danger" title="Delete Task" (click)="deleteTask(taskID)"><i class="fa-solid fa-trash"></i></button>
             </div>
         </div>
     </div>

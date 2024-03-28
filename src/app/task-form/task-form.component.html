@@ -1,5 +1,5 @@
-<div class="container pt-5">
-    <form class="mt-4 w-75 mx-auto" [formGroup]="taskForm">
+<div class="container py-5">
+    <form class="my-4 w-75 mx-auto" [formGroup]="taskForm">
         <div class="row g-3">
             <div>
                 <label class="form-label" for="title">Title:</label>
@@ -36,20 +36,19 @@
                 </div>
             </div>
             <div>
-                <button type="button" class="btn btn-success" (click)="addItem()"><i
+                <button type="button" class="btn btn-success" title="Add Task Item" (click)="addItem()"><i
                         class="fa-solid fa-plus"></i></button>
             </div>
             <div formArrayName="items">
                 <div *ngFor="let item of Items().controls; let Index=index">
-
                     <div>
                         <input class="form-control mb-3" type="text" [formControlName]="Index">
                     </div>
                 </div>
             </div>
             <div>
-                <button type="button" class="btn btn-primary" [disabled]="taskForm.invalid"
-                    (click)="submitForm()">Submit</button>
+                <button type="button" class="btn" [ngClass]="situation == 'new' ? 'btn-success' : 'btn-warning'" [disabled]="taskForm.invalid"
+                    (click)="submitForm()">{{situation == 'new' ? 'Add Task' : 'Update Task'}}</button>
             </div>
         </div>
     </form>

@@ -13,10 +13,10 @@
                 [ngClass]="{'bg-warning': !task.status , 'bg-info': task.status}"
                 [routerLink]="['/taskdetails',task.id]">
                 <div class="d-flex gap-2 position-absolute top-0 end-0 m-3">
-                    <button class="btn btn-success" (click)="updateTask(task.id)"><i class="fa-regular fa-pen-to-square"></i></button>
-                    <button class="btn btn-secondary" (click)="dublicateTask(task.id, $event)"><i
+                    <button class="btn btn-success" title="Update Task" (click)="updateTask(task.id)"><i class="fa-regular fa-pen-to-square"></i></button>
+                    <button class="btn btn-secondary" title="Dublicate Task" (click)="dublicateTask(task.id, $event)"><i
                             class="fa-regular fa-copy"></i></button>
-                    <button class="btn btn-danger" (click)="deleteTask(task.id, $event)"><i
+                    <button class="btn btn-danger" title="Delete Task" (click)="deleteTask(task.id, $event)"><i
                             class="fa-solid fa-trash"></i></button>
                 </div>
                 <h2 class="text-uppercase">{{task.title}}</h2>

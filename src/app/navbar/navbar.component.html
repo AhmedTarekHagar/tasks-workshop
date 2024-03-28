@@ -1,4 +1,4 @@
-<nav class="navbar navbar-expand-lg bg-body-tertiary position-fixed w-100 z-3" data-bs-theme="dark">
+<nav class="navbar navbar-expand-lg bg-body-tertiary position-fixed w-100" data-bs-theme="dark">
     <div class="container">
       <a class="navbar-brand" routerLink="home">Tasks</a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -9,10 +9,8 @@
           <li class="nav-item">
             <a class="nav-link" routerLink="home" routerLinkActive="active-component">All Tasks</a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link" [routerLink]="['task-form','new']" routerLinkActive="active-component">Create</a>
-          </li>
         </ul>
       </div>
+      <a class="btn btn-danger" [routerLink]="['task-form','new']">Create Task</a>
     </div>
   </nav>
