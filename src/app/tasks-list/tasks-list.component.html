@@ -1,4 +1,4 @@
-<div class="container rounded overflow-hidden position-relative">
+<div class="container rounded overflow-hidden position-relative pt-5 px-5">
 
     <!-- loader for waiting time for response -->
     <div *ngIf="!isLoaded"
@@ -7,21 +7,29 @@
     </div>
 
     <!-- content from api response -->
-    <div class="row g-3" *ngIf="isLoaded">
-        <div class="col-md-4" *ngFor="let task of tasksList">
-            <div class="inner p-3 rounded shadow cursor-pointer" [ngClass]="{'bg-warning': !task.status , 'bg-info': task.status}"
+    <div class="row g-2 mt-5" *ngIf="isLoaded">
+        <div class="col-md-4" *ngFor="let task of tasksList; trackBy: listTrackBy">
+            <div class="inner position-relative p-3 rounded shadow cursor-pointer z-3"
+                [ngClass]="{'bg-warning': !task.status , 'bg-info': task.status}"
                 [routerLink]="['/taskdetails',task.id]">
+                <div class="d-flex gap-2 position-absolute top-0 end-0 m-3">
+                    <button class="btn btn-success" (click)="updateTask(task.id)"><i class="fa-regular fa-pen-to-square"></i></button>
+                    <button class="btn btn-secondary" (click)="dublicateTask(task.id, $event)"><i
+                            class="fa-regular fa-copy"></i></button>
+                    <button class="btn btn-danger" (click)="deleteTask(task.id, $event)"><i
+                            class="fa-solid fa-trash"></i></button>
+                </div>
                 <h2 class="text-uppercase">{{task.title}}</h2>
                 <p>{{task.description}}</p>
                 <ng-container *ngIf="task.status; else pending">
-                    <p>Complete</p>
+                    <p class="text-success">Complete</p>
                 </ng-container>
                 <ng-template #pending>
-                    <p>Pending</p>
+                    <p class="text-danger">Pending</p>
                 </ng-template>
-                <p [ngClass]="{'text-danger': !task.status , 'text-warning': task.status}">Priority: {{task.priority}}
+                <p [ngClass]="{'text-danger': !task.status , 'text-white': task.status}">Priority: {{task.priority}}
                 </p>
-                <div class="d-flex justify-content-between">
+                <div class="d-flex justify-content-between bg-dark text-white px-3 py-2 rounded">
                     <span>Start Time:
                         <span
                             *ngIf="task.startTime != ''; else noStartTime;">{{task.startTime?.slice(0,10)?.split('-')?.reverse()?.join('/')}}</span>
@@ -37,16 +45,6 @@
                         </ng-template>
                     </span>
                 </div>
-                <ng-container *ngIf="task.numbered; else unordered">
-                    <ol class="list-unstyled">
-                        <li *ngFor="let item of task.items; index as index">{{index+1 | number:'2.0'}} - {{item}}</li>
-                    </ol>
-                </ng-container>
-                <ng-template #unordered>
-                    <ul>
-                        <li *ngFor="let item of task.items">{{item}}</li>
-                    </ul>
-                </ng-template>
             </div>
         </div>
     </div>

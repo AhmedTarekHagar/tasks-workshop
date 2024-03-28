@@ -1,1 +1,61 @@
-<p>task-details works!</p>
+<div class="container">
+
+    <div *ngIf="!isLoaded"
+        class="position-absolute top-0 start-0 end-0 bottom-0 d-flex justify-content-center align-items-center">
+        <div class="loader"></div>
+    </div>
+
+    <div class="row" *ngIf="isLoaded">
+        <div class="col-md-9 mx-auto py-3 px-5 rounded shadow"
+            [ngClass]="{'bg-warning': !taskDetails.status , 'bg-info': taskDetails.status}">
+            <div class="item">
+                <h2 class="text-uppercase">{{taskDetails.title}}</h2>
+                <p>{{taskDetails.description}}</p>
+                <ng-container *ngIf="taskDetails.status; else pending">
+                    <p class="text-success">Complete</p>
+                </ng-container>
+                <ng-template #pending>
+                    <p class="text-danger">Pending</p>
+                </ng-template>
+                <p [ngClass]="{'text-danger': !taskDetails.status , 'text-white': taskDetails.status}">Priority:
+                    {{taskDetails.priority}}
+                </p>
+                <div class="d-flex justify-content-between bg-dark text-white px-3 py-2 rounded">
+                    <span>Start Time:
+                        <span
+                            *ngIf="taskDetails.startTime != ''; else noStartTime;">{{taskDetails.startTime?.slice(0,10)?.split('-')?.reverse()?.join('/')}}</span>
+                        <ng-template #noStartTime>
+                            <i class="fa-solid fa-minus"></i>
+                        </ng-template>
+                    </span>
+                    <span>End Time:
+                        <span
+                            *ngIf="taskDetails.endTime != ''; else noEndtime;">{{taskDetails.endTime?.slice(0,10)?.split('-')?.reverse()?.join('/')}}</span>
+                        <ng-template #noEndtime>
+                            <i class="fa-solid fa-minus"></i>
+                        </ng-template>
+                    </span>
+                </div>
+                <p>Task Items:</p>
+                <ng-container *ngIf="taskDetails.numbered; else unordered">
+                    <ol class="list-unstyled">
+                        <li *ngFor="let item of taskDetails.items; index as index">{{index+1 | number:'2.0'}} - {{item}}
+                        </li>
+                    </ol>
+                </ng-container>
+                <ng-template #unordered>
+                    <ul>
+                        <li *ngFor="let item of taskDetails.items">{{item}}</li>
+                    </ul>
+                </ng-template>
+            </div>
+            <div class="controls d-flex justify-content-center gap-3">
+                <button class="btn btn-success" (click)="updateTask(taskDetails.id)"><i
+                        class="fa-regular fa-pen-to-square"></i></button>
+                <button class="btn btn-secondary" (click)="dublicateTask(taskDetails.id)"><i
+                        class="fa-regular fa-copy"></i></button>
+                <button class="btn btn-danger" (click)="deleteTask(taskID)"><i class="fa-solid fa-trash"></i></button>
+            </div>
+        </div>
+    </div>
+</div>
