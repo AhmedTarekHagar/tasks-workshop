@@ -24,7 +24,7 @@ export class TaskFormComponent implements OnInit {
 
 
   ngOnInit(): void {
-    // validate cia query param whether to add new task or update exisitng task
+    // validate via query param whether to add new task or update exisitng task
     this._ActivatedRoute.params.subscribe((route) => {
       this.situation = route['id'];
     })
@@ -65,12 +65,14 @@ export class TaskFormComponent implements OnInit {
     }
   }
 
+  // add item field to DOM dynamically
   addItem(): void {
     const newControlName = `dynamicControl${this.dynamicControls.length}`;
     this.taskForm.addControl(newControlName, this.formBuilder.control(''));
     this.dynamicControls.push({ label: `Item ${this.dynamicControls.length + 1}`, controlName: newControlName });
   }
 
+  // collect items into an array to maintain api requirement
   getDynamicFormData(): any {
     const dynamicFormData: string[] = [];
     this.dynamicControls.forEach(dynamicControl => {
@@ -80,6 +82,7 @@ export class TaskFormComponent implements OnInit {
     return dynamicFormData;
   }
 
+  // validate add or update form then submit
   submitForm(): void {
     const formData: Task = {
       id: this.situation == 'new' ? Number(this.allTasksLength + 1) : Number(this.updateID),
@@ -96,12 +99,14 @@ export class TaskFormComponent implements OnInit {
     if (this.situation == 'new') {
       this._TasksService.addNewTaskReq(formData).subscribe({
         next: (res) => {
+          console.log(this.taskForm.value);
           this._Router.navigate(['home'])
         }
       });
     } else {
       this._TasksService.updateTaskReq(this.updateID, formData).subscribe({
         next: (res) => {
+          console.log(this.taskForm.value);
           this._Router.navigate(['home'])
         }
       });
